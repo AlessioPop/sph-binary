@@ -3,7 +3,7 @@
 A 2D Smoothed Particle Hydrodynamics (SPH) solver for simulating a gas ring around a central star perturbed by an eccentric binary companion.
 
 <p align="center">
-  <img src="assets/simulation.gif" alt="SPH simulation preview" width="600">
+  <img src="assets/sph_simulation.gif" alt="SPH simulation preview" width="600">
 </p>
 
 ## Overview
@@ -91,7 +91,7 @@ SPH_G/
 ├── requirements.txt   # Python dependencies
 ├── README.md
 └── assets/
-    └── simulation.gif # Preview animation (add your own)
+    └── sph_simulation.gif # Preview animation
 ```
 
 ## License
