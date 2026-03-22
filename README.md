@@ -8,29 +8,7 @@ A 2D Smoothed Particle Hydrodynamics (SPH) solver for simulating a gas ring arou
 
 ## Overview
 
-This code models a circum-primary gas disk in a binary star system using the SPH method. A ring of gas particles orbits a central mass **M1** and is tidally perturbed when the companion **M2** passes through periastron on a highly eccentric orbit.
-
-### Physics
-
-- **Isothermal equation of state** — pressure is proportional to density
-- **M4 cubic spline kernel** — compact support within 2h
-- **Adaptive smoothing lengths** — iteratively adjusted to track local density
-- **Monaghan (1997) artificial viscosity** — signal-velocity formulation for shock capturing
-- **Adaptive CFL timestep** — guarantees numerical stability
-- **Velocity-Verlet (KDK) integrator** — symplectic, with force caching across steps
-- **Tidal perturbation** — companion gravity computed only when within 2 AU (skipped when distant for performance)
-
-### Performance
-
-Overall complexity is **O(N log N + M)** per step, where M is the number of neighbour pairs.
-
-- **Numba JIT + fastmath** — density and force kernels compiled to parallel native code via `@njit(parallel=True, fastmath=True)`
-- **scipy cKDTree** — neighbour search via optimised C KD-tree; CSR built with O(M) Numba scatter (no sorting)
-- **Force caching** — forces computed once per step and reused, halving the work of a naive KDK scheme
-- **Single tree build per step** — the CSR from the smoothing-length iteration is reused for forces
-- **Density-only kernel** — `kernel_W` skips gradient computation, saving work on millions of density evaluations
-- **Pre-computed pressure term** — `cs²/ρ` computed once per step, avoiding redundant divisions in the inner loop
-- **Lazy tidal force** — companion gravity skipped entirely when distance > 2 AU
+This code models a circum-primary gas disk in a binary star system using the SPH method. A ring of gas particles orbits a central mass **M1** and is tidally perturbed when the companion **M2** passes through periastron on a highly eccentric orbit (set by default).
 
 ## Requirements
 
@@ -38,7 +16,7 @@ Overall complexity is **O(N log N + M)** per step, where M is the number of neig
 pip install -r requirements.txt
 ```
 
-Optional: `ffmpeg` on `PATH` for MP4 output (falls back to GIF via Pillow otherwise).
+Optional: `ffmpeg` on `PATH` for MP4 output.
 
 ## Usage
 
@@ -82,18 +60,3 @@ Each run creates a timestamped folder `run_YYYYMMDD_HHMMSS/` containing:
 ### Rendering
 
 Particles are visualised as a smooth density field: masses are deposited onto a 2D histogram and convolved with a Gaussian kernel matching the mean SPH smoothing length. The result is displayed with the `inferno` colormap on a logarithmic scale.
-
-## Project Structure
-
-```
-SPH_G/
-├── main_sph.py        # Full simulation code (single-file)
-├── requirements.txt   # Python dependencies
-├── README.md
-└── assets/
-    └── sph_simulation.gif # Preview animation
-```
-
-## License
-
-This project is provided as-is for research and educational use.
